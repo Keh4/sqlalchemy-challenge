@@ -131,7 +131,22 @@ def start_end():
     # Create our session (link) from Python to the DB
     session = Session(engine)
 
+    ##Find the min, max and average temps reported starting in Feb 2017
+    sel_summary_feb = [func.max(measurement.tobs),func.min(measurement.tobs),func.avg(measurement.tobs)]
+    date_str_1 = "2017-01-31"
+    date_str_2 = "2017-03-01"
 
+    
+    results = session.query(*sel_summary_feb).\
+        filter(measurement.date> date_str_1).\
+        filter(measurement.date< date_str_2).all()
+
+
+    session.close()
+
+    Feb2017_Summary = list(np.ravel(results))
+
+    return jsonify(Feb2017_Summary)
     
 
 if __name__ == '__main__':
